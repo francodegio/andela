@@ -174,20 +174,23 @@ if __name__ == '__main__':
         data = preprocess()
         X_train, X_test, y_train, y_test = split_data(data, test_size=0.2, random_state=42)
         model = full_pipeline()
+        
         print("Fitting model...")
         model.fit(X_train, y_train)
         y_pred_train = model.predict(X_train)
         y_pred_test = model.predict(X_test)
         metrics = metrics_df(y_train, y_pred_train, y_test, y_pred_test)
+        
         with open('../models/metrics.md', 'w') as f:
             f.write(make_markdown_report(metrics))
-        print(metrics)
-        metrics.to_csv('../models/metrics.csv', index=False)
+            metrics.to_csv('../models/metrics.csv', index=False)
+            print(metrics)
         
         plot_resid(y_test, y_pred_test, 'Test')
         plot_resid(y_train, y_pred_train, 'Train')
         write_path = '../models/price_model.pkl'
+        
         with open(write_path, 'wb') as f:
             pickle.dump(model, f)
 
-        print(f"Saving model to {write_path}")
+        print(f"Model saved to {write_path}")
