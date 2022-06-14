@@ -1,22 +1,29 @@
-import json
+import traceback
+import logging
+
+import pandas as pd
 
 from fastapi import FastAPI
 
-from andela.definitions import PriceModel, PricePayload
+from andela.definitions import PriceModel, TripPayload
 
 
 app = FastAPI()
-path = 'models/price_model.pkl'
-model = PriceModel(path)
+logger = logging.getLogger()
+try:
+    path = 'models/price_model.pkl'
+    model = PriceModel(path)
+except:
+    logger.error(traceback.format_exc())
 
-
-@app.post('/predict')
-def predict(data):
+@app.post('/')
+async def predict(data: TripPayload):
     try:
-        data = PricePayload(**data)
-        df = data.df
+        logger.info("I'm here!")
+        #data = TripPayload(**data)
+        df = pd.DataFrame([data.__dict__])
         df = model.transform(df)
-
-        return json.dumps({"prediction": model.predict(df)}), 200
-    except Exception as e:
-        return json.dumps({"error": str(e)}), 400
+        return {"prediction": str(model.predict(df)[0])}
+    except:
+        logger.error(str(traceback.format_exc()))
+        return {"error":  str(traceback.format_exc())}

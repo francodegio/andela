@@ -1,27 +1,23 @@
 import pickle
 
 from typing import Union
+from pydantic import BaseModel
 
 import pandas as pd
 
-from andela.blueprints import Payload, Model
+from andela.blueprints import Model
 
 
-class PricePayload(Payload):
+class TripPayload(BaseModel):
     city_name: str
     journey_starting_datetime: str
     journey_duration_hours: Union[int, float]
-
-    def __post_init__(self):
-        self.df = self.transform_raw_data()
-
-    def transform_raw_data(self):
-        return pd.DataFrame([self.__dict__])
 
 
 class PriceModel(Model):
     def __init__(self, path: str) -> None:
         self.path = path
+        self.load_model()
 
     def load_model(self):
         with open(self.path, "rb") as f:
@@ -33,11 +29,10 @@ class PriceModel(Model):
     def transform(self, data):
         df = data.copy()
         df['datetime'] = pd.to_datetime(df['journey_starting_datetime'])
-        df.rename(
+        df = df.rename(
             columns={
-                'duration_hours': 'duration',
+                'journey_duration_hours': 'duration',
                 'city_name': 'city'
-            },
-            inplace=True
+            }
         )
         return df[['datetime', 'duration', 'city']].copy()
