@@ -9,6 +9,11 @@ setup(
         'fastapi',
         'pandas',
         'scikit-learn',
-        'catboost'
+        'catboost',
+        'uvicorn',
+        'seaborn',
+        'matplotlib',
+        'numpy',
+        'pydantic',
     ]
 )

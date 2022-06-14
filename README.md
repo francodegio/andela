@@ -17,6 +17,8 @@ pip install -e .
 ```
 
 ### Training the model
+Important: to be able to train the model, you first need to add a `data` folder with
+the `journeys.csv` file.
 ```sh
 cd andela
 python train.py
