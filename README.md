@@ -27,3 +27,15 @@ python train.py
 cd ..
 uvicorn main:app --reload
 ```
+This will serve the app locally at http://127.0.0.1/
+### Testing the endpoint
+Now you can send a payload to get a prediction using something like cURL, Postman, etc.
+Here's a payload example to use with POST method:
+```json
+{
+    "city_name": "San Francisco",
+    "journey_starting_datetime": "2017-06-01 22:00:00",
+    "journey_duration_hours": 4.4
+}
+```
+
